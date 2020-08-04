@@ -70,16 +70,76 @@ gradesRouter.delete('/:id', async (req, res) => {
   }
 })
 
-gradesRouter.get('/total', (req, res) => {
-  res.send(`student: ${req.query.student}, subject: ${req.query.subject}`);
+gradesRouter.get('/total', async (req, res) => {
+  try {
+    // console.log(`student: ${req.query.student}, subject: ${req.query.subject}`);
+    const gradesFile = await readFile(global.fileName);
+    const gradesData = JSON.parse(gradesFile);
+
+    const gradesStudentSubject = gradesData.grades.filter(
+      grade => grade.student === req.query.student &&
+               grade.subject === req.query.subject );
+
+    if (gradesStudentSubject.length === 0) 
+      throw new Error('Estudante/matéria não localizados...');
+
+    var total = gradesStudentSubject.reduce(
+      (total, grade) => total + grade.value, 0);
+
+    res.send({ total });
+  } catch(err) {
+    res.status(400).send({ error: err.message });
+  }
 })
 
-gradesRouter.get('/average', (req, res) => { 
-  res.send(`subject: ${req.query.subject}, type: ${req.query.type}`);
+gradesRouter.get('/average', async (req, res) => { 
+  try {
+    // console.log(`subject: ${req.query.subject}, type: ${req.query.type}`);
+
+    const gradesFile = await readFile(global.fileName);
+    const gradesData = JSON.parse(gradesFile);
+
+    const gradesSubjectType = gradesData.grades.filter(
+      grade => grade.type === req.query.type &&
+               grade.subject === req.query.subject );
+    
+    if (gradesSubjectType.length === 0) 
+      throw new Error('Matéria/tipo de atividade não localizados...');
+
+    var totalGrades = gradesSubjectType.reduce(
+      (total, grade) => total + grade.value, 0);
+
+    const average = totalGrades / gradesSubjectType.length;
+
+    res.send({ average });
+  } catch(err) {
+    res.status(400).send({ error: err.message });
+  }
 })
 
-gradesRouter.get('/top3', (req, res) => { 
-  res.send(`subject: ${req.query.subject}, type: ${req.query.type}`);
+gradesRouter.get('/top3', async (req, res) => { 
+  try {
+    // console.log(`subject: ${req.query.subject}, type: ${req.query.type}`);
+
+    const gradesFile = await readFile(global.fileName);
+    const gradesData = JSON.parse(gradesFile);
+
+    const gradesSubjectType = gradesData.grades.filter(
+      grade => grade.type === req.query.type &&
+               grade.subject === req.query.subject );
+    
+    if (gradesSubjectType.length === 0) 
+      throw new Error('Matéria/tipo de atividade não localizados...');
+
+    gradesSubjectType.sort(
+      (a, b) => { return b.value - a.value });
+
+    const top3Grades = gradesSubjectType.slice(0, 3);
+
+    res.send(top3Grades);
+  } catch(err) {
+    res.status(400).send({ error: err.message });
+  }
 })
 
 gradesRouter.get('/:id', async (req, res) => {

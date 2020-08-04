@@ -1,5 +1,5 @@
 {
-  "nextId": 59,
+  "nextId": 49,
   "grades": [
     {
       "id": 1,
@@ -384,54 +384,6 @@
       "type": "Desafio",
       "value": 45,
       "timestamp": "2020-05-19T18:21:25.284Z"
-    },
-    {
-      "id": 49,
-      "student": "Alexandre",
-      "subject": "Math",
-      "type": "Exam",
-      "value": 9.5,
-      "timestamp": "2020-08-03T22:20:43.693Z"
-    },
-    {
-      "id": 50,
-      "student": "Alexandre",
-      "subject": "Math",
-      "type": "Final Exam",
-      "value": 10,
-      "timestamp": "2020-08-03T22:24:40.109Z"
-    },
-    {
-      "id": 51,
-      "student": "Alexandre",
-      "subject": "Math",
-      "type": "Final Exam",
-      "value": 10,
-      "timestamp": "2020-08-03T22:24:57.598Z"
-    },
-    {
-      "id": 52,
-      "student": "Alexandre",
-      "subject": "Math",
-      "type": "Final Exam",
-      "value": 10,
-      "timestamp": "2020-08-03T22:25:54.809Z"
-    },
-    {
-      "id": 53,
-      "student": "Alexandre",
-      "subject": "Physics",
-      "type": "Exam",
-      "value": 10,
-      "timestamp": "2020-08-03T23:45:35.176Z"
-    },
-    {
-      "id": 54,
-      "student": "Daniel",
-      "subject": "Science",
-      "type": "Exam",
-      "value": 8.5,
-      "timestamp": "2020-08-03T23:43:50.981Z"
     }
   ]
 }
