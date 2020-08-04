@@ -250,20 +250,12 @@
       "timestamp": "2020-05-19T18:21:25.171Z"
     },
     {
-      "id": 32,
-      "student": "Roberto Achar",
-      "subject": "04 - MongoDB",
-      "type": "Trabalho Prático",
-      "value": 16,
-      "timestamp": "2020-05-19T18:21:25.178Z"
-    },
-    {
       "id": 33,
-      "student": "Roberto Achar",
+      "student": "Alexandre",
       "subject": "01 - JavaScript",
       "type": "Desafio",
-      "value": 25,
-      "timestamp": "2020-05-19T18:21:25.184Z"
+      "value": 15,
+      "timestamp": "2020-08-04T03:59:44.289Z"
     },
     {
       "id": 34,

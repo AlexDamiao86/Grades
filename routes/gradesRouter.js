@@ -5,31 +5,69 @@ const { readFile, writeFile } = fs;
 
 const gradesRouter = express.Router();
 
-gradesRouter.post('/', async (req, res) => {
+function logRequestVerbose(req) {
+  logger.verbose(`${req.method} ${req.url}\t
+    params: ${JSON.stringify(req.params)}\t
+    queryParams: ${JSON.stringify(req.query)}\t
+    body: ${JSON.stringify(req.body)}`);
+};
+
+gradesRouter.post('/', async (req, res, next) => {
   try {
+    logRequestVerbose(req);
+    const { student, subject, type, value } = req.body; 
+
+    if (!student) {
+      throw new Error("Estudante obrigatório");
+    }
+    if (!subject) {
+      throw new Error("Matéria obrigatória");
+    }
+    if (!type) {
+      throw new Error("Tipo de atividade obrigatória");
+    }
+    if (value == null) {
+      throw new Error("Nota deve ser informada");
+    }
+
     const gradesFile = await readFile(global.fileName);
     const gradesData = JSON.parse(gradesFile);
 
-    const { student, subject, type, value } = req.body; 
     const id = gradesData.nextId++; 
     const timestamp = new Date().toJSON();
 
     const grade = { id, student, subject, type, value, timestamp };
-
     gradesData.grades.push(grade);
 
     await writeFile(global.fileName, JSON.stringify(gradesData, null, 2));
 
     res.send(grade);
   } catch(err) {
-    res.status(400).send({ error: err.message });
+      next(err);
   }
-})
+});
 
-gradesRouter.put('/', async (req, res) => { 
+gradesRouter.put('/', async (req, res, next) => { 
   try { 
+    logRequestVerbose(req);
     const { id, student, subject, type, value } = req.body; 
-  
+
+    if (id == null) {
+      throw new Error("ID deve ser informado");
+    }
+    if (!student) {
+      throw new Error("Estudante obrigatório");
+    }
+    if (!subject) {
+      throw new Error("Matéria obrigatória");
+    }
+    if (!type) {
+      throw new Error("Tipo de atividade obrigatória");
+    }
+    if (value == null) {
+      throw new Error("Nota deve ser informada");
+    }
+
     const gradesFile = await readFile(global.fileName);
     const gradesData = JSON.parse(gradesFile);
 
@@ -46,12 +84,13 @@ gradesRouter.put('/', async (req, res) => {
 
     res.send(grade);
   } catch(err) {
-    res.status(400).send({ error: err.message });  
+      next(err);  
   }
 })
 
-gradesRouter.delete('/:id', async (req, res) => {
+gradesRouter.delete('/:id', async (req, res, next) => {
   try {
+    logRequestVerbose(req);
     const gradesFile = await readFile(global.fileName);
     const gradesData = JSON.parse(gradesFile);
 
@@ -66,13 +105,13 @@ gradesRouter.delete('/:id', async (req, res) => {
     await writeFile(global.fileName, JSON.stringify(gradesData, null, 2));
     res.end();
   } catch(err) {
-    res.status(400).send({ error: err.message });
+      next(err);
   }
 })
 
-gradesRouter.get('/total', async (req, res) => {
+gradesRouter.get('/total', async (req, res, next) => {
   try {
-    // console.log(`student: ${req.query.student}, subject: ${req.query.subject}`);
+    logRequestVerbose(req);
     const gradesFile = await readFile(global.fileName);
     const gradesData = JSON.parse(gradesFile);
 
@@ -88,14 +127,13 @@ gradesRouter.get('/total', async (req, res) => {
 
     res.send({ total });
   } catch(err) {
-    res.status(400).send({ error: err.message });
+      next(err);
   }
 })
 
-gradesRouter.get('/average', async (req, res) => { 
+gradesRouter.get('/average', async (req, res, next) => { 
   try {
-    // console.log(`subject: ${req.query.subject}, type: ${req.query.type}`);
-
+    logRequestVerbose(req);
     const gradesFile = await readFile(global.fileName);
     const gradesData = JSON.parse(gradesFile);
 
@@ -113,14 +151,13 @@ gradesRouter.get('/average', async (req, res) => {
 
     res.send({ average });
   } catch(err) {
-    res.status(400).send({ error: err.message });
+      next(err);
   }
 })
 
-gradesRouter.get('/top3', async (req, res) => { 
+gradesRouter.get('/top3', async (req, res, next) => { 
   try {
-    // console.log(`subject: ${req.query.subject}, type: ${req.query.type}`);
-
+    logRequestVerbose(req);
     const gradesFile = await readFile(global.fileName);
     const gradesData = JSON.parse(gradesFile);
 
@@ -138,12 +175,13 @@ gradesRouter.get('/top3', async (req, res) => {
 
     res.send(top3Grades);
   } catch(err) {
-    res.status(400).send({ error: err.message });
+      next(err);
   }
 })
 
-gradesRouter.get('/:id', async (req, res) => {
+gradesRouter.get('/:id', async (req, res, next) => {
   try {
+    logRequestVerbose(req);
     const gradesFile = await readFile(global.fileName);
     const gradesData = JSON.parse(gradesFile);
 
@@ -154,8 +192,14 @@ gradesRouter.get('/:id', async (req, res) => {
 
     res.send(grade);
   } catch(err) {
-    res.status(400).send({ error: err.message });
+      next(err);
   }
+})
+
+// Tratamento de erro, gravação de log
+gradesRouter.use((err, req, res, next) => {
+  logger.error(`${req.method} ${req.baseUrl} - ${err.message}`);
+  res.status(400).send({ error: err.message });
 })
 
 export default gradesRouter;
