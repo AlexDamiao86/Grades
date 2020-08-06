@@ -2,6 +2,9 @@ import express from "express";
 import winston from "winston";
 import gradesRouter from "./routes/gradesRouter.js";
 import { promises as fs } from "fs";
+import cors from "cors";
+import swaggerUi from "swagger-ui-express";
+import { swaggerDocument } from "./doc.js";
 
 const { readFile } = fs;
 
@@ -28,6 +31,10 @@ global.logger = winston.createLogger({
 const app = express();
 //Utiliza formato json na transferencia de informações
 app.use(express.json());
+
+//Disponibiliza que a aplicação seja chamada por outras
+app.use(cors());
+app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use('/grade', gradesRouter);
 

@@ -6,7 +6,7 @@ const { readFile, writeFile } = fs;
 const gradesRouter = express.Router();
 
 function logRequestVerbose(req) {
-  logger.verbose(`${req.method} ${req.url}\t
+  logger.verbose(`${req.method} ${req.baseUrl}${req.url} \t
     params: ${JSON.stringify(req.params)}\t
     queryParams: ${JSON.stringify(req.query)}\t
     body: ${JSON.stringify(req.body)}`);
